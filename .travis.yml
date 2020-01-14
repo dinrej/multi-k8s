@@ -1,0 +1,20 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t dinrej/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true dinrej/react-test npm test
+
+after_success:
+    - docker build -t dinrej/multi-client ./client
+    - docker build -t dinrej/multi-nginx ./nginx    
+    - docker build -t dinrej/multi-server ./server
+    - docker build -t dinrej/multi-worker ./worker
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push dinrej/multi-client
+    - docker push dinrej/multi-server
+    - docker push dinrej/multi-worker
+    - docker push dinrej/multi-nginx
