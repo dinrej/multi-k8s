@@ -18,3 +18,16 @@ after_success:
     - docker push dinrej/multi-server
     - docker push dinrej/multi-worker
     - docker push dinrej/multi-nginx
+
+deploy:
+    provider: elasticbeanstalk
+    region: "us-east-2"
+    app: "multi-docker"
+    env: "MultiDocker-env-1"
+    bucket_name: "elasticbeanstalk-us-east-2-498073188387"
+    bucket_path: "multi-docker"
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key:
+        secure: $AWS_SECRET_KEY   
